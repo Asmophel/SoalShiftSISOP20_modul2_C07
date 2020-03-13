@@ -20,7 +20,8 @@
     * [3c](#3c)
     * [3d](#3d)
 
-### Soal 1
+## Soal 1
+### Soal
 Buatlah program C yang menyerupai crontab untuk menjalankan script bash dengan
 ketentuan sebagai berikut:
 
@@ -44,15 +45,15 @@ Contoh: ./program \* 34 7 /home/somi/test.sh
 Program dengan argumen seperti contoh di atas akan menjalankan script test.sh setiap
 detik pada jam 07:34.
 
-#### 1a
+### 1a
 
-#### 1b
+### 1b
 
-#### 1c
+### 1c
 
-#### 1d
+### 1d
 
-#### 1e
+### 1e
 
 
 ## Soal 2
