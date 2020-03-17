@@ -171,16 +171,35 @@ int main(int argc, char *argv[]){
 }
 ```
 
-### 1a
+### Penjelasan
+```
+int CheckNum(char arr[]){
+    for (int i = 0; i < strlen(arr); i++){
+        if (arr[i] < '0' || arr[i] > '9'){
+            printf ("range waktu harus menggunakan angka\n");
+            return 0;
+        }else {
+            return 1;
+        }
+    }
+}
+```
+berfungsi untuk mengecek apakah argumen merupakan angka, dengan cara mengecek tiap index di array
 
-### 1b
-
-### 1c
-
-### 1d
-
-### 1e
-
+```
+if ((strcmp(argv[1], "*"))==0){
+        sec = jalan;
+    } else if (CheckNum(argv[1])){
+        sec = atoi(argv[1]);
+        if (sec > 59 || sec < 0){
+            printf("range detik salah\n");
+            return 0;
+        }
+    } else {
+        return 0;
+    }
+```
+if pertama untuk mengecek, apabila argumen berupa *, sec = jalan = 1, 
 
 ## Soal 2
 ### Soal
