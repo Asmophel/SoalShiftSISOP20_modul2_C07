@@ -199,8 +199,93 @@ if ((strcmp(argv[1], "*"))==0){
         return 0;
     }
 ```
-if pertama untuk mengecek, apabila argumen berupa *, sec = jalan = 1, 
+if pertama untuk mengecek, apabila argumen berupa ```*```, sec = jalan = 1, jika bukan ```*``` maka panggil fungsi ```CheckNum```, jika fungsi mereturn 0, berarti argumen adalah angka, lalu masukkan argumen ke variabel sec dengan menggunakan atoi, selanjutnya cek apakah argumen sudah memenuhi range dari detik yaitu 0 - 59, jika salah print kata" tersebut, jika semua salah, return o. Syntax diatas dapat digunakan juga untuk argumen ke-2 dan ke-3.
 
+```
+pid_t pid, sid;
+
+    pid = fork();
+
+    if (pid < 0){
+      exit(EXIT_FAILURE);
+    }
+
+    if (pid > 0){ 
+      exit(EXIT_SUCCESS);
+    }
+    umask(0);
+
+    sid = setsid();
+    if (sid < 0){
+      exit(EXIT_FAILURE);
+    }
+    
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
+
+    while (1) 
+    {
+      time_t waktu;
+      struct tm* tm_skrg;  
+
+      waktu = time(NULL);
+      tm_skrg = localtime(&waktu);
+
+      if ((tm_skrg->tm_sec == sec || sec == jalan) && (tm_skrg->tm_min == min || min == jalan) 
+        && (tm_skrg->tm_hour == hour || hour == jalan))
+      {
+        pid_t child_id;
+        child_id = fork();
+
+        int status;
+
+        if (child_id == 0)
+        {    
+          char *argexec[] = {"bash", argv[4], NULL};
+          execv("/bin/bash", argexec);
+        }
+        else 
+          while ((wait(&status)) > 0);
+      }
+
+      sleep(1);
+    }
+
+}
+```
+merupakan daemon
+
+```
+while (1) 
+    {
+      time_t waktu;
+      struct tm* tm_skrg;  
+
+      waktu = time(NULL);
+      tm_skrg = localtime(&waktu);
+
+      if ((tm_skrg->tm_sec == sec || sec == jalan) && (tm_skrg->tm_min == min || min == jalan) 
+        && (tm_skrg->tm_hour == hour || hour == jalan))
+      {
+        pid_t child_id;
+        child_id = fork();
+
+        int status;
+
+        if (child_id == 0)
+        {    
+          char *argexec[] = {"bash", argv[4], NULL};
+          execv("/bin/bash", argexec);
+        }
+        else 
+          while ((wait(&status)) > 0);
+      }
+
+      sleep(1);
+    }
+```
+untuk mendapatkan fungsi waktu, gunakan directory time.h, lalu masukkan dalam variabel sec, min, dan hour. cek apakah sec, min, dan hour sudah benar. jika sudah benar, child akan menjalankan bash ke directory yang sudah dimasukkan di argumen ke 4.
 ## Soal 2
 ### Soal
 Shisoppu mantappu! itulah yang selalu dikatakan Kiwa setiap hari karena sekarang dia
