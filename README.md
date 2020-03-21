@@ -286,6 +286,7 @@ while (1)
     }
 ```
 untuk mendapatkan fungsi waktu, gunakan directory time.h, lalu masukkan dalam variabel sec, min, dan hour. cek apakah sec, min, dan hour sudah benar. jika sudah benar, child akan menjalankan bash ke directory yang sudah dimasukkan di argumen ke 4.
+
 ## Soal 2
 ### Soal
 Shisoppu mantappu! itulah yang selalu dikatakan Kiwa setiap hari karena sekarang dia
@@ -342,44 +343,109 @@ membuat program c yang ada dalam folderkhusus
 isi dari program c nya adalah membuat daemon lalu loop yang ada dalam daemon tersebut diisi dengan fork.
 isi dari fork tersebut adalah sebagai berikut
 
-membuat variabel now yang akan menampung waktu pada saat itu, lalu menggunakan fungsi strftime untuk mengambil waktu pada saat itu
+membuat variabel waktufile yang akan menampung waktu pada saat itu, lalu menggunakan fungsi strftime untuk mengambil waktu pada saat itu
 
 ```
-    time_t now;
-    time(&now);
-    struct tm *local = localtime(&now);
-    strftime(dirname, 100, "%G-%m-%d_%H:%M:%S/", local);
+       time_t waktufile;
+    struct tm *lt;
+    time(&waktufile);
+    lt = localtime(&waktufile);
+    char date[26], namafile[100];
+    strftime(namafile, 100, "%Y-%m-%d_%H:%M:%S", lt);
 ```
 
-membuat array bernama tmppath dan dirname untuk menampung nama dan path yang di inginkan
-```
-    char tmppath[100] = "/home/denta/modul2/folderkhusus/";
-    char dirname[100];
-    char *pathname = strcat(tmppath, dirname);
-```
 
 lalu child yang ada di fork tersebut membuat folder dengan ketentuan seperti pada soal
 ```
-  if (child_id == 0)
-    {
-        // this is child
-        char *argv[] = {"mkdir", "-p", pathname, NULL};
+        if(child_id2 == 0){
+        char *argv[] = {"mkdir", namafile, NULL};
         execv("/bin/mkdir", argv);
-    }
 ```
+
+### 2b
+membuat loop sebanyak 20. isi dari loop tersebut adalah mendownload gambar dengan ketentuan pada soal. diberi sleep(5) karena jeda antar mendownload gambar adalah 5 detik
+```
+        for(i=0; i<20; i++){
+          strcpy(namafile, curFolder); strcat(namafile, "/");
+          time_t waktugambar;
+          time(&waktugambar);
+          struct tm* lt2 = localtime(&waktugambar);
+          strftime(namagambar, 100, "%Y-%m-%d_%H:%M:%S", lt2);
+          long int sec = time(NULL)%1000 + 100;
+          snprintf(link, 1000, "https://picsum.photos/%ld", sec);
+          child_id3 = fork();
+          if(child_id3 == 0){
+            char *argv[] = {"wget", "-O", namagambar, link, NULL};
+            execv("/usr/bin/wget", argv);
+          }
+          sleep(5);
+        }
+```
+### 2c
+lalu membuat fork lagi dan child dari fork tersebut bekerja untuk menzip folder yang sudah selesai mendownload total 20 gambar
+```
+        pid_t child_id4;
+        int status4;
+        child_id4 = fork();
+        while(wait(&status4) > 0);
+        chdir("..");
+        char outputZip[1000];
+        snprintf(outputZip, 1000, "%s.zip", curFolder);
+
+        pid_t child_id5= fork();
+        if(child_id5 == 0){
+          char *argv[] = {"zip", "-r", outputZip, curFolder, NULL};
+          execv("/usr/bin/zip", argv);
+```
+
+dan untuk menghapus folder yang sudah selesai di zip digunakan command rm
+```
+        int status5;
+        while(wait(&status5) > 0);
+        char *argv[] = {"rm", "-rf", curFolder, NULL};
+        execv("/bin/rm", argv);
+```
+
 lalu menambahkan sleep agar program tersebut di jeda selama 30 detik
 ```
     sleep(30);
 ```
 
-### 2b
-
-
-### 2c
-
 ### 2d
+membuat killer
+```
+  temp = fopen("killer.sh", "w");
+```
+meremove
+```
+  fputs("rm $0\n", temp);
+```
 
 ### 2e
+
+mendeteksi input argumen dengan menggunakan strcmp
+```
+  if(strcmp(argb[1], "-a") == 0){
+    ModeA();
+  }
+  if(strcmp(argb[1], "-b") == 0){
+    ModeB();
+  }
+```
+
+untuk supaya jika argumen -a akan memberhentikan program langung menggunakan
+```
+ fputs("killOrder=$(echo $(pidof soal2coba))\n", temp);
+  fputs("kill -9 $killOrder\n", temp);
+  ```
+
+untuk supaya jika argumen -b maka akan membiarkan proses download sampai selesai dan di zip lalu remove folder lalu di stop
+```
+  fputs("killOrder=$(echo $(pidof soal2coba))\n", temp);
+  fputs("killOrder=${killOrder##* }\n", temp);c
+  fputs("kill -9 $killOrder\n", temp);
+```
+
 
 ## Soal 3
 ### soal
@@ -419,36 +485,66 @@ membuat program c
 
 membuat fork di dalam program c lalu di dalam child dari fork tersebut diisi dengan perintah execv yang berguna untuk membuat folder indomie
 ```
-  if (child_id1 == 0) 
-  {
-        char *argv[] = {"mkdir", "-p", "/home/denta/modul2/indomie", NULL};
-        execv("/bin/mkdir", argv);
+	if (child_1 == 0) {
+	// child 1
+		char *argv[] = {"mkdir", "-p", "/home/denta/modul2/indomie", NULL};
+		execv("/bin/mkdir", argv);
   }
 ```
 
-lalu di dalam parent nya diisi dengan perintah execv yang berguna untuk membuat folder sedaap. tidak lupa juga ditambahkan wait agar parent berjalan sesudah child selesai, lalu juga ditambahkan sleep supaya memberi jeda setelah folder indomie di buat
+membuat fork baru dan child diisi dengan membuat folder sedap
 ```
-else{
-        while ((wait(&status)) > 0);
-        sleep(5);
-        char *argv[] = {"mkdir", "-p", "/home/denta/modul2/sedaap", NULL};
-        execv("/bin/mkdir", argv);
-  } 
+		if (child_1 == 0) {
+		// child 2
+			sleep(5);
+			char *argv[] = {"mkdir", "-p", "/home/denta/modul2/sedaap", NULL};
+			execv("/bin/mkdir", argv);
+		}
 ```
 
 ### 3b
 membuat fork baru lalu di dalam child yang ada di fork baru ini diisi dengan perintah execv yang berguna untuk meng-unzip folder zip yang sudah di download pada drive modul 2
 ```
-  if (child_id == 0) {
-    // this is child
-          char *arg[3] = {"unzip", "/home/denta/modul2/jpg.zip", NULL};
-          execv("/usr/bin/unzip", arg);
-        
-  }
+			if (child_1 == 0) {
+			// child 3
+				//while (wait(&status) > 0);
+				chdir("/home/denta/modul2");
+				char *zip[] = {"unzip", "/home/denta/modul2/jpg.zip", NULL};
+				execv("/usr/bin/unzip", zip);
+			}
+```
+### 3c
+memindahkan semua file dan semua directory menggunakan S_IFDIR
+```
+if (stat(path, &filetype) == 0) {
+							if (filetype.st_mode & S_IFDIR) {
+								if (child_1 = fork() == 0) {
+									char *move1[] = {"mv", path, "/home/denta/modul2/indomie/", NULL};
+									execv("/bin/mv", move1);
+								}
+							} else {
+								if (child_1 = fork() == 0) {
+									char *move2[] = {"mv", path, "/home/denta/modul2/sedaap/", NULL};
+									execv("/bin/mv", move2);
+								} 
 ```
 
-### 3c
-
 ### 3d
+membuat file coba1.txt di setiap folder yang ada dalam indomie dan 3 detik kemudian membuat file coba2.txt
+```
+						strcpy(location, "/home/denta/modul2/indomie/");
+						strcat(location, makefile->d_name);
+			
+						if (child_1 = fork() > 0) {
+							chdir(location);
+							char *mktxt1[] = {"touch", "coba1.txt", NULL};
+							execv("/bin/touch", mktxt1);
+						} sleep(3);
+						if (child_1 = fork() > 0) {
+                            // sleep(3);
+							chdir(location);
+							char *mktxt2[] = {"touch", "coba2.txt", NULL};
+							execv("/bin/touch", mktxt2);
+						}
 
-
+```
